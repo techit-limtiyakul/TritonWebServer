@@ -1,8 +1,8 @@
 
 CC=g++
 CFLAGS=-ggdb -Wall -Wextra -pedantic -Werror
-DEPS = httpd.hpp RequestFramer.hpp
-SRCS = httpd.cpp RequestFramer.cpp
+DEPS = httpd.hpp RequestFramer.hpp RequestParser.hpp HTTPGetRequest.hpp
+SRCS = httpd.cpp RequestFramer.cpp RequestParser.cpp HTTPGetRequest.cpp
 MAIN_SRCS = main.c $(SRCS)
 MAIN_OBJS = $(MAIN_SRCS:.c=.o)
 
