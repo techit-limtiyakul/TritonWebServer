@@ -65,7 +65,7 @@ void HandleTCPClient(int clntSocket, const string doc_root)
                 sendfile(fd, clntSocket, fileOffset, &fileOffset, s, 0);
             }
 
-            if(request.getHeader("connection") == "closed")
+            if(request.getHeader("connection") == "close")
                 break;
 
         }
