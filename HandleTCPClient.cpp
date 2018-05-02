@@ -11,7 +11,7 @@
 using namespace std;
 
 size_t BUFSIZE = 512;
-void HandleTCPClient(int clntSocket)
+void HandleTCPClient(int clntSocket, const string doc_root)
 {
     RequestFramer framer;
     RequestParser parser;
@@ -33,17 +33,27 @@ void HandleTCPClient(int clntSocket)
             string message = framer.topMessage();
             framer.popMessage();
             HTTPGetRequest request = parser.parse(message);
-            HTTPGetResponse response = PopulateResponse(request);
+
+//            auto myMap = request.getHeaders();
+//
+//            for(auto it = myMap.cbegin(); it != myMap.cend(); ++it)
+//            {
+//                cout << it->first << " " << it->second << endl;
+//            }
+
+            HTTPGetResponse response = PopulateResponse(request, doc_root);
 
             string responseString = response.toString();
             send(clntSocket, responseString.c_str(), responseString.size() , 0);
 
             string path = response.getAbsolutePath();
+            cout << "Path to file" << path << endl;
             if (path != "") {
                 off_t fileOffset = 0;
                 int fd = open(path.c_str(), O_RDONLY);
 //                sendfile(clntSocket, fd, &fileOffset, BUFSIZE); for linux
-
+                struct sf_hdtr* s;
+                sendfile(clntSocket, fd, fileOffset, &fileOffset, s, 0);
             }
 
             if(request.getHeader("connection") == "closed")
@@ -55,7 +65,6 @@ void HandleTCPClient(int clntSocket)
         if (numBytesRcvd < 0)
             DieWithError("recv() failed");
     }
-
-
+    
     close(clntSocket);    /* Close client socket */
 }

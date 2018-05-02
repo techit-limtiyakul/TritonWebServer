@@ -5,17 +5,12 @@
 #include "httpd.hpp"
 #include <string.h>
 
-
-//equivalent to old main
-//call frame and parse logic
-//multithread with new clients
-//append file to docroot
-
 #define MAXPENDING 5
 
 
 struct ThreadArgs {
     int clntSock;
+    string doc_root;
 };
 
 
@@ -24,10 +19,10 @@ void *ThreadMain(void *threadArgs) {
     pthread_detach(pthread_self());
     // Extract socket file descriptor from argument
     int clntSock = ((struct ThreadArgs *) threadArgs)->clntSock;
-
+    string doc_root = ((struct ThreadArgs *) threadArgs)->doc_root;
 
     free(threadArgs); // Deallocate memory for argument
-    HandleTCPClient(clntSock);
+    HandleTCPClient(clntSock, doc_root);
     return (nullptr);
 }
 
@@ -85,6 +80,8 @@ void start_httpd(unsigned short port, string doc_root) {
             DieWithError("malloc() failed");
         }
         threadArgs->clntSock = clntSock;
+        threadArgs->doc_root = doc_root;
+
         pthread_t threadID;
         int returnValue = pthread_create(&threadID, nullptr, ThreadMain, threadArgs);
         if(returnValue != 0){

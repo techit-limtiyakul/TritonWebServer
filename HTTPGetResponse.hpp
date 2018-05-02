@@ -8,13 +8,13 @@ using namespace std;
 
 class HTTPGetResponse {
 public:
-    HTTPGetResponse(map<string, string> headers, string body);
+    HTTPGetResponse(map<string, string> headers, string path = "");
 
     HTTPGetResponse();
 
-    string getHeader(string key);
+    string getHeader(string key) const;
 
-    string getAbsolutePath();
+    string getAbsolutePath() const;
 
     string toString();
 

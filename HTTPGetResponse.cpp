@@ -12,22 +12,28 @@ HTTPGetResponse::HTTPGetResponse() {
     absolutePath = "";
 }
 
-string HTTPGetResponse::getHeader(string key) {
-    return headers[key];
+string HTTPGetResponse::getHeader(string key) const{
+    auto pos = headers.find(key);
+    if(pos == headers.end()){
+        return "";
+    }else{
+        return pos->second;
+    }
 }
 
-string HTTPGetResponse::getAbsolutePath() {
+string HTTPGetResponse::getAbsolutePath() const{
     return std::string(absolutePath);
 }
 
 string HTTPGetResponse::toString() {
-    string response = headers["version"] + " " + headers["code"] + " " + headers["description"] + CLRF;
-    response += "Server: " + headers["server"] + CLRF;
+    string response = headers["version"] + " " + headers["code"] + CLRF;
+    response += "Server:" + headers["server"] + CLRF;
     if(headers["code"] == "200"){
         response += "Last-Modified: " + headers["last_modified"] + CLRF;
+        response += "Content-Length:" + headers["content_length"] + CLRF;
     }
-    response += "Content-Type: " + headers["content_type"] + CLRF;
-    response += "Content-Length " + headers["content_length"] + CLRF;
+    response += "Content-Type:" + headers["content_type"] + CLRF;
+    response += CLRF;
 
     return response;
 }
