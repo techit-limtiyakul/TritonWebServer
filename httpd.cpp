@@ -75,7 +75,7 @@ void start_httpd(unsigned short port, string doc_root) {
         }
 
 
-        auto *threadArgs = new threadArgs();
+        auto *threadArgs = new ThreadArgs();
 
         threadArgs->clntSock = clntSock;
         threadArgs->doc_root = doc_root;
