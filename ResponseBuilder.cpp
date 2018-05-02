@@ -44,8 +44,9 @@ HTTPGetResponse ResponseBuilder::PopulateResponse(const HTTPGetRequest &request,
     headers["code"] = "200 OK";
 
     string filePath = request.getDirectory();
-    if(filePath == "/")
+    if(filePath == "/"){
         filePath = "/index.html";
+    }
 
     if(filePath.substr(0,1) != "/"){
         return Build400ErrorResponse();
@@ -94,13 +95,16 @@ HTTPGetResponse ResponseBuilder::PopulateResponse(const HTTPGetRequest &request,
         return Build400ErrorResponse();
     }
 
+    if(headers["code"] == "200 OK"){
+//        for linux
+//        auto mod_time = stat_buf.st_mtime;
+//        headers["last_modified"] = ctime(&mod_time);
+        auto mod_time = stat_buf.st_mtimespec;
+        headers["last_modified"] = ctime(&mod_time.tv_sec);
+    }
+
     headers["content_length"] = to_string(stat_buf.st_size);
 
-//    auto now = std::chrono::system_clock::now();
-//    std::time_t current_time = std::chrono::system_clock::to_time_t(now);
-//    string timeString = std::ctime(&current_time);
-
-    headers["last_modified"] = "Wed, 2 May 04:28:23 2018";
 
     return HTTPGetResponse(headers, absolutePath);
 }

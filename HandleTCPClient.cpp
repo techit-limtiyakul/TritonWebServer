@@ -27,8 +27,10 @@ void HandleTCPClient(int clntSocket, const string doc_root)
 
     // Send received string and receive again until end of stream
     while (numBytesRcvd > 0) { // 0 indicates end of stream
+
         bool isDone = false;
         framer.append(string(readBuffer, readBuffer+numBytesRcvd));
+
         while(framer.hasMessage() && !isDone){
             string message = framer.topMessage();
             framer.popMessage();
@@ -40,18 +42,10 @@ void HandleTCPClient(int clntSocket, const string doc_root)
             try{
                 request = parser.parse(message);
                 response = builder.PopulateResponse(request, doc_root);
-            }
-            catch(exception &e)
-            {
+            } catch(exception &e) {
                 response = builder.Build400ErrorResponse();
             }
 
-//            auto myMap = request.getHeaders();
-//
-//            for(auto it = myMap.cbegin(); it != myMap.cend(); ++it)
-//            {
-//                cout << it->first << " " << it->second << endl;
-//            }
 
             string responseString = response.toString();
             send(clntSocket, responseString.c_str(), responseString.size() , 0);
@@ -67,7 +61,6 @@ void HandleTCPClient(int clntSocket, const string doc_root)
                 struct sf_hdtr* s;
                 sendfile(fd, clntSocket, fileOffset, &fileOffset, s, 0);
             }
-            
 
             if(request.getHeader("Connection") == "close")
                 isDone = true;
