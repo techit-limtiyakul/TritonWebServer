@@ -7,6 +7,7 @@
 #include "httpd.hpp"
 #include "RequestFramer.hpp"
 #include "RequestParser.hpp"
+#include "ResponseBuilder.hpp"
 
 using namespace std;
 
@@ -19,7 +20,7 @@ void HandleTCPClient(int clntSocket, const string doc_root)
 
     // Receive message from client
     ssize_t numBytesRcvd = recv(clntSocket, readBuffer, BUFSIZE, 0);
-    
+
     if (numBytesRcvd < 0)
         DieWithError("recv() failed");
 
@@ -30,7 +31,19 @@ void HandleTCPClient(int clntSocket, const string doc_root)
         if(framer.hasMessage()){
             string message = framer.topMessage();
             framer.popMessage();
-            HTTPGetRequest request = parser.parse(message);
+
+            HTTPGetResponse response;
+            ResponseBuilder builder;
+            HTTPGetRequest request = HTTPGetRequest();
+
+            try{
+                request = parser.parse(message);
+                response = builder.PopulateResponse(request, doc_root);
+            }
+            catch(exception &e)
+            {
+                response = builder.BuildErrorResponse("400 User Error");
+            }
 
 //            auto myMap = request.getHeaders();
 //
@@ -38,8 +51,6 @@ void HandleTCPClient(int clntSocket, const string doc_root)
 //            {
 //                cout << it->first << " " << it->second << endl;
 //            }
-
-            HTTPGetResponse response = PopulateResponse(request, doc_root);
 
             string responseString = response.toString();
             send(clntSocket, responseString.c_str(), responseString.size() , 0);

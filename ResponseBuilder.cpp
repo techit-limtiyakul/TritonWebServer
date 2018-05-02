@@ -1,4 +1,5 @@
 #include <iostream>
+#include "ResponseBuilder.hpp"
 #include <sys/stat.h>
 #include "HTTPGetRequest.hpp"
 #include "HTTPGetResponse.hpp"
@@ -12,9 +13,17 @@ const string jpg_type = ".jpg";
 const string png_type = ".png";
 const string html_type = ".html";
 
-HTTPGetResponse BuildErrorResponse(string errorCode);
+HTTPGetResponse ResponseBuilder::BuildErrorResponse(const string errorCode){
+    map<string, string> headers;
 
-HTTPGetResponse PopulateResponse(const HTTPGetRequest &request, string doc_root){
+    headers["version"] = VERSION;
+    headers["server"] = SERVER;
+    headers["code"] = errorCode;
+
+    return HTTPGetResponse(headers);
+}
+
+HTTPGetResponse ResponseBuilder::PopulateResponse(const HTTPGetRequest &request, string doc_root){
     map<string, string> headers;
 
     headers["version"] = VERSION;
@@ -67,17 +76,6 @@ HTTPGetResponse PopulateResponse(const HTTPGetRequest &request, string doc_root)
     }
 
     printf("What have gone wrong here: %s\n", strerror(errno));
-
-    return HTTPGetResponse(headers);
-}
-
-
-HTTPGetResponse BuildErrorResponse(string errorCode){
-    map<string, string> headers;
-
-    headers["version"] = VERSION;
-    headers["server"] = SERVER;
-    headers["code"] = errorCode;
 
     return HTTPGetResponse(headers);
 }
