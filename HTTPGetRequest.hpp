@@ -10,9 +10,11 @@ public:
 
     HTTPGetRequest();
 
-    string getDirectory();
+    string getDirectory()const;
 
     string getHeader(string key);
+
+    map<string, string> getHeaders()const;
 
 private:
     string fileDirectory;

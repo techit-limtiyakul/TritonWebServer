@@ -4,5 +4,5 @@
 using namespace std;
 
 HTTPGetResponse PopulateResponse(const HTTPGetRequest &request){
-    return HTTPGetResponse();
+    return HTTPGetResponse(request.getHeaders(), request.getDirectory());
 }

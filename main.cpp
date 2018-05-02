@@ -4,7 +4,7 @@
 #include <limits.h>
 #include "httpd.hpp"
 
-using namespace std;
+//using namespace std;
 
 void usage(char * argv0)
 {

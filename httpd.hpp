@@ -5,8 +5,6 @@
 #include "HTTPGetRequest.hpp"
 #include "HTTPGetResponse.hpp"
 
-using namespace std;
-
 struct ThreadArgs;
 void *ThreadMain(void *arg);
 void start_httpd(unsigned short port, string doc_root);

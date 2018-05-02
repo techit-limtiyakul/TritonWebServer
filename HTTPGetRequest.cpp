@@ -14,10 +14,14 @@ HTTPGetRequest::HTTPGetRequest()
     headers = map<string, string>();
 }
 
-string HTTPGetRequest::getDirectory(){
+string HTTPGetRequest::getDirectory()const {
     return fileDirectory;
 }
 
 string HTTPGetRequest::getHeader(string key){
     return headers[key];
 }
+
+map<string, string> HTTPGetRequest::getHeaders()const {
+    return headers;
+};
