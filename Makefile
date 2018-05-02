@@ -1,4 +1,3 @@
-
 CC=g++
 CFLAGS=-ggdb -std=c++11 -Wall -Wextra
 DEPS = httpd.hpp RequestFramer.hpp RequestParser.hpp HTTPGetRequest.hpp HTTPGetResponse.hpp

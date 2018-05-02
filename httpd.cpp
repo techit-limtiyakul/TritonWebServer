@@ -3,6 +3,7 @@
 #include <arpa/inet.h>
 //#include <pthread.h>
 #include "httpd.hpp"
+#include <string.h>
 
 
 //equivalent to old main
