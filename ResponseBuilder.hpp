@@ -5,8 +5,12 @@
 
 class ResponseBuilder {
 public:
-    HTTPGetResponse BuildErrorResponse(const string errorCode);
     HTTPGetResponse PopulateResponse(const HTTPGetRequest &request, string doc_root);
+    HTTPGetResponse Build400ErrorResponse();
+    HTTPGetResponse Build403ErrorResponse();
+    HTTPGetResponse Build404ErrorResponse();
+private:
+    HTTPGetResponse BuildErrorResponse(const string errorCode);
 };
 
 

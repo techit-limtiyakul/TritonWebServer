@@ -19,8 +19,22 @@ HTTPGetResponse ResponseBuilder::BuildErrorResponse(const string errorCode){
     headers["version"] = VERSION;
     headers["server"] = SERVER;
     headers["code"] = errorCode;
+    headers["content_type"] = "text/html";
 
     return HTTPGetResponse(headers);
+}
+
+HTTPGetResponse ResponseBuilder::Build400ErrorResponse() {
+    return BuildErrorResponse("400 Client Error");
+}
+
+HTTPGetResponse ResponseBuilder::Build403ErrorResponse() {
+    return BuildErrorResponse("403 Forbidden");
+
+}
+
+HTTPGetResponse ResponseBuilder::Build404ErrorResponse() {
+    return BuildErrorResponse("404 Not Found");
 }
 
 HTTPGetResponse ResponseBuilder::PopulateResponse(const HTTPGetRequest &request, string doc_root){
@@ -33,49 +47,54 @@ HTTPGetResponse ResponseBuilder::PopulateResponse(const HTTPGetRequest &request,
     string filePath = request.getDirectory();
     if(filePath == "/")
         filePath = "/index.html";
-    else if(filePath.substr(0,1) != "/"){
-        return BuildErrorResponse("400 Error");
-    }
 
-    size_t idx = filePath.find_last_of('.');
-    string extension = filePath.substr(idx);
+    if(filePath.substr(0,1) != "/"){
+        return Build400ErrorResponse();
+    }
 
     filePath = doc_root + filePath;
 
     char resolved_path[200];
+    char resolved_doc_root[200];
     realpath(filePath.c_str(), resolved_path);
+    realpath(doc_root.c_str(), resolved_doc_root);
 
     string absolutePath = string(resolved_path);
+    string absoluteDocRoot = string(resolved_doc_root);
 
     cout << absolutePath << endl;
+
+    size_t idx = absolutePath.find_last_of('.');
+    string extension = absolutePath.substr(idx);
 
     struct stat stat_buf;
     int rc = stat(absolutePath.c_str(), &stat_buf);
 
     if(request.getHeader("Host") == ""){
-        headers["code"] = "400 Client Error";
-    }else if(extension != jpg_type && extension != png_type && extension != html_type) {
-        headers["code"] = "400 Client Error";
+        return Build400ErrorResponse();
     }else if(rc == -1){
-        headers["code"] = "404 Not Found";
+        return Build404ErrorResponse();
     }else if(!(stat_buf.st_mode & S_IROTH)){
-        headers["code"] = "403 Forbidden";
+        return Build403ErrorResponse();
+    }else if(absolutePath.find(absoluteDocRoot) != 0){
+        cout << absolutePath << "::" << absoluteDocRoot << endl;
+        return Build404ErrorResponse();
     }
 
-    if(headers["code"] != "200 OK" || extension == html_type){
+    if(extension == html_type){
         headers["content_type"] = "text/html";
     }else if(extension == jpg_type){
         headers["content_type"] = "image/jpg";
-    }else{
+    }else if(extension == png_type){
         headers["content_type"] = "image/png";
+    }else{
+        return Build400ErrorResponse();
     }
 
-    if(headers["code"] == "200 OK"){
-        headers["content_length"] = to_string(stat_buf.st_size);
-        return HTTPGetResponse(headers, absolutePath);
-    }
-
-    printf("What have gone wrong here: %s\n", strerror(errno));
-
-    return HTTPGetResponse(headers);
+    headers["content_length"] = to_string(stat_buf.st_size);
+    return HTTPGetResponse(headers, absolutePath);
+//
+//    printf("What have gone wrong here: %s\n", strerror(errno));
+//
+//    return HTTPGetResponse(headers);
 }
