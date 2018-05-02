@@ -18,7 +18,6 @@ struct ThreadArgs {
     int clntSock;
 };
 
-const int timeout = 5000;
 
 void *ThreadMain(void *threadArgs) {
     // Guarantees that thread resources are deallocated upon return
@@ -26,9 +25,6 @@ void *ThreadMain(void *threadArgs) {
     // Extract socket file descriptor from argument
     int clntSock = ((struct ThreadArgs *) threadArgs)->clntSock;
 
-    // Set timeout for the client socket
-//    if(setsockopt(clntSock, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(timeout)) < 0)
-//        DieWithError("setsockopt() failed");
 
     free(threadArgs); // Deallocate memory for argument
     HandleTCPClient(clntSock);
@@ -70,9 +66,19 @@ void start_httpd(unsigned short port, string doc_root) {
         clntLen = sizeof(clntAddr);
 
         /* Wait for a client to connect */
-        if ((clntSock = accept(servSock, (struct sockaddr *) &clntAddr,
-                               &clntLen)) < 0)
+        if ((clntSock = accept(servSock, (struct sockaddr *) &clntAddr, &clntLen)) < 0)
             DieWithError("accept() failed");
+
+        // Set timeout for the client socket
+        struct timeval timeout;
+        timeout.tv_sec = 5;
+        timeout.tv_usec = 0;
+
+        if (setsockopt(clntSock, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(timeout)) < 0)
+        {
+            DieWithError("setsockopt failed");
+        }
+
 
         auto *threadArgs = (struct ThreadArgs *) malloc(sizeof(struct ThreadArgs));
         if (threadArgs == nullptr){
