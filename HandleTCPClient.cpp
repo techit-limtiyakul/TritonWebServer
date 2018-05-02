@@ -8,6 +8,7 @@
 #include "RequestFramer.hpp"
 #include "RequestParser.hpp"
 #include "ResponseBuilder.hpp"
+//#include <sys/sendfile.h>
 
 using namespace std;
 
@@ -26,9 +27,9 @@ void HandleTCPClient(int clntSocket, const string doc_root)
 
     // Send received string and receive again until end of stream
     while (numBytesRcvd > 0) { // 0 indicates end of stream
-
+        bool isDone = false;
         framer.append(string(readBuffer, readBuffer+numBytesRcvd));
-        while(framer.hasMessage()){
+        while(framer.hasMessage() && !isDone){
             string message = framer.topMessage();
             framer.popMessage();
 
@@ -60,15 +61,20 @@ void HandleTCPClient(int clntSocket, const string doc_root)
             if (path != "") {
                 off_t fileOffset = 0;
                 int fd = open(path.c_str(), O_RDONLY);
-//                sendfile(clntSocket, fd, &fileOffset, BUFSIZE); for linux
+                //for linux
+//                sendfile(fd, clntSocket, &fileOffset, BUFSIZE);
                 struct sf_hdtr* s;
                 sendfile(fd, clntSocket, fileOffset, &fileOffset, s, 0);
             }
             
 
             if(request.getHeader("Connection") == "close")
-                break;
+                isDone = true;
 
+        }
+
+        if(isDone){
+            break;
         }
 
         numBytesRcvd = recv(clntSocket, readBuffer, BUFSIZE, 0);
