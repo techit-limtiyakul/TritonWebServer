@@ -28,8 +28,12 @@ string HTTPGetResponse::getAbsolutePath() const{
 string HTTPGetResponse::toString() {
     string response = headers["version"] + " " + headers["code"] + CLRF;
     response += "Server:" + headers["server"] + CLRF;
-    if(headers["code"] == "200"){
+    if(headers.count("Last-Modified") > 0)
+    {
         response += "Last-Modified: " + headers["last_modified"] + CLRF;
+    }
+    if(headers.count("Content-Length") > 0)
+    {
         response += "Content-Length:" + headers["content_length"] + CLRF;
     }
     response += "Content-Type:" + headers["content_type"] + CLRF;
