@@ -1,9 +1,8 @@
 #include <iostream>
 #include "ResponseBuilder.hpp"
 #include <sys/stat.h>
-#include "HTTPGetRequest.hpp"
-#include "HTTPGetResponse.hpp"
-#include <errno.h>
+#include <ctime>
+#include <chrono>
 
 using namespace std;
 
@@ -84,7 +83,7 @@ HTTPGetResponse ResponseBuilder::PopulateResponse(const HTTPGetRequest &request,
     if(extension == html_type){
         headers["content_type"] = "text/html";
     }else if(extension == jpg_type){
-        headers["content_type"] = "image/jpg";
+        headers["content_type"] = "image/jpeg";
     }else if(extension == png_type){
         headers["content_type"] = "image/png";
     }else{
@@ -92,9 +91,12 @@ HTTPGetResponse ResponseBuilder::PopulateResponse(const HTTPGetRequest &request,
     }
 
     headers["content_length"] = to_string(stat_buf.st_size);
+
+//    auto now = std::chrono::system_clock::now();
+//    std::time_t current_time = std::chrono::system_clock::to_time_t(now);
+//    string timeString = std::ctime(&current_time);
+
+    headers["last_modified"] = "Wed, 2 May 04:28:23 2018";
+
     return HTTPGetResponse(headers, absolutePath);
-//
-//    printf("What have gone wrong here: %s\n", strerror(errno));
-//
-//    return HTTPGetResponse(headers);
 }

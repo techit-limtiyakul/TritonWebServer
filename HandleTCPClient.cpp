@@ -62,7 +62,8 @@ void HandleTCPClient(int clntSocket, const string doc_root)
                 off_t fileOffset = 0;
                 int fd = open(path.c_str(), O_RDONLY);
                 //for linux
-//                sendfile(fd, clntSocket, &fileOffset, BUFSIZE);
+//                int filesize = stoi(response.getHeader("content_length"));
+//                sendfile(clntSocket, fd, &fileOffset, filesize);
                 struct sf_hdtr* s;
                 sendfile(fd, clntSocket, fileOffset, &fileOffset, s, 0);
             }

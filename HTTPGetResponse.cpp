@@ -1,6 +1,6 @@
 #include "HTTPGetResponse.hpp"
 
-const string CLRF = "\r\n";
+const string CRLF = "\r\n";
 
 HTTPGetResponse::HTTPGetResponse(map<string, string> headers, string path) {
     this->headers = headers;
@@ -26,18 +26,18 @@ string HTTPGetResponse::getAbsolutePath() const{
 }
 
 string HTTPGetResponse::toString() {
-    string response = headers["version"] + " " + headers["code"] + CLRF;
-    response += "Server:" + headers["server"] + CLRF;
-    if(headers.count("Last-Modified") > 0)
+    string response = headers["version"] + " " + headers["code"] + CRLF;
+    response += "Server:" + headers["server"] + CRLF;
+    if(headers.count("last_modified") > 0)
     {
-        response += "Last-Modified: " + headers["last_modified"] + CLRF;
+        response += "Last-Modified: " + headers["last_modified"] + CRLF;
     }
-    if(headers.count("Content-Length") > 0)
+    if(headers.count("content_length") > 0)
     {
-        response += "Content-Length:" + headers["content_length"] + CLRF;
+        response += "Content-Length:" + headers["content_length"] + CRLF;
     }
-    response += "Content-Type:" + headers["content_type"] + CLRF;
-    response += CLRF;
+    response += "Content-Type:" + headers["content_type"] + CRLF;
+    response += CRLF;
 
     return response;
 }
