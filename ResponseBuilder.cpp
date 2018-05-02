@@ -64,7 +64,11 @@ HTTPGetResponse ResponseBuilder::PopulateResponse(const HTTPGetRequest &request,
     cout << absolutePath << endl;
 
     size_t idx = absolutePath.find_last_of('.');
-    string extension = absolutePath.substr(idx);
+
+    string extension = "";
+    if(idx != string::npos){
+        extension = absolutePath.substr(idx);
+    }
 
     struct stat stat_buf;
     int rc = stat(absolutePath.c_str(), &stat_buf);
