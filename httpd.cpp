@@ -89,7 +89,7 @@ void start_httpd(unsigned short port, string doc_root) {
             printf("with thread %lu\n", (unsigned long int) threadID);
         }
 
-        printf("Handling client %s\n", inet_ntoa(clntAddr.sin_addr));
+        printf("Handling client %s socket %s\n", inet_ntoa(clntAddr.sin_addr), to_string(clntSock).c_str());
 
     }
 
