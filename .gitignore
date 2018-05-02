@@ -90,3 +90,5 @@ httpd
 *.plist
 
 \.DS_Store
+
+tests/output\.txt

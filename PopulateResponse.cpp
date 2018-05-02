@@ -12,24 +12,31 @@ const string jpg_type = ".jpg";
 const string png_type = ".png";
 const string html_type = ".html";
 
-HTTPGetResponse PopulateResponse(const HTTPGetRequest &request, string doc_root){
+HTTPGetResponse BuildErrorResponse(string errorCode);
 
+HTTPGetResponse PopulateResponse(const HTTPGetRequest &request, string doc_root){
     map<string, string> headers;
 
     headers["version"] = VERSION;
     headers["server"] = SERVER;
+    headers["code"] = "200 OK";
 
     string filePath = request.getDirectory();
     if(filePath == "/")
         filePath = "/index.html";
+    else if(filePath.substr(0,1) != "/"){
+        return BuildErrorResponse("400 Error");
+    }
+
     size_t idx = filePath.find_last_of('.');
     string extension = filePath.substr(idx);
+
+    filePath = doc_root + filePath;
 
     char resolved_path[200];
     realpath(filePath.c_str(), resolved_path);
 
-    filePath = string(resolved_path);
-    string absolutePath = doc_root + filePath;
+    string absolutePath = string(resolved_path);
 
     cout << absolutePath << endl;
 
@@ -62,5 +69,15 @@ HTTPGetResponse PopulateResponse(const HTTPGetRequest &request, string doc_root)
     printf("What have gone wrong here: %s\n", strerror(errno));
 
     return HTTPGetResponse(headers);
+}
 
+
+HTTPGetResponse BuildErrorResponse(string errorCode){
+    map<string, string> headers;
+
+    headers["version"] = VERSION;
+    headers["server"] = SERVER;
+    headers["code"] = errorCode;
+
+    return HTTPGetResponse(headers);
 }

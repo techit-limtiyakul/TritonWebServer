@@ -52,7 +52,7 @@ string RequestParser::parseFirstLine(const string &line) {
 }
 
 std::pair<string,string> RequestParser::parseHeader(const string &line) {
-    regex headerLineRe("^([^:\\s]+)\\s*:\\s*([^:]*)$");
+    regex headerLineRe("^([^:\\s]+)\\s*:\\s*(.*)$");
     smatch matchedResult;
 
     if(regex_match(line, matchedResult, headerLineRe))

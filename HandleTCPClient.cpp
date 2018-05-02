@@ -17,11 +17,9 @@ void HandleTCPClient(int clntSocket, const string doc_root)
     RequestParser parser;
     char readBuffer[BUFSIZE];
 
-
     // Receive message from client
     ssize_t numBytesRcvd = recv(clntSocket, readBuffer, BUFSIZE, 0);
-
-
+    
     if (numBytesRcvd < 0)
         DieWithError("recv() failed");
 
@@ -53,7 +51,7 @@ void HandleTCPClient(int clntSocket, const string doc_root)
                 int fd = open(path.c_str(), O_RDONLY);
 //                sendfile(clntSocket, fd, &fileOffset, BUFSIZE); for linux
                 struct sf_hdtr* s;
-                sendfile(clntSocket, fd, fileOffset, &fileOffset, s, 0);
+                sendfile(fd, clntSocket, fileOffset, &fileOffset, s, 0);
             }
 
             if(request.getHeader("connection") == "closed")
