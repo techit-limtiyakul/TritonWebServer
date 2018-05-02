@@ -26,14 +26,13 @@ HTTPGetRequest RequestParser::parse(std::string request) {
 
         map<string, string> headers;
         //second to second-to-last lines are headers (last one is empty)
-        for(unsigned i=1; i<requestLines.size()-1; i++)
-        {
+        for (unsigned i = 1; i < requestLines.size() - 1; i++) {
             headers.insert(parseHeader(requestLines[i]));
         }
 
         return HTTPGetRequest(fileDirectory, headers);
     }
-    catch (std::exception &e){
+    catch (std::exception &e) {
         cout << e.what() << endl;
         throw e;
     }
@@ -43,20 +42,18 @@ string RequestParser::parseFirstLine(const string &line) {
     regex firstLineRe("^GET (\\S+) HTTP/1.1$");
     smatch matchedResult;
 
-    if(regex_match(line, matchedResult, firstLineRe))
-    {
-         return matchedResult[1];
+    if (regex_match(line, matchedResult, firstLineRe)) {
+        return matchedResult[1];
     }
 
     throw std::runtime_error("Invalid request");
 }
 
-std::pair<string,string> RequestParser::parseHeader(const string &line) {
+std::pair<string, string> RequestParser::parseHeader(const string &line) {
     regex headerLineRe("^([^:\\s]+)\\s*:\\s*(.*)$");
     smatch matchedResult;
 
-    if(regex_match(line, matchedResult, headerLineRe))
-    {
+    if (regex_match(line, matchedResult, headerLineRe)) {
         return std::make_pair(matchedResult[1], matchedResult[2]);
     }
 

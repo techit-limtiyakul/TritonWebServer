@@ -1,6 +1,7 @@
 
 #ifndef P1_M_HTTPGETRESPONSE_H
 #define P1_M_HTTPGETRESPONSE_H
+
 #include <string>
 #include <map>
 

@@ -11,7 +11,7 @@ const string jpg_type = ".jpg";
 const string png_type = ".png";
 const string html_type = ".html";
 
-HTTPGetResponse ResponseBuilder::BuildErrorResponse(const string errorCode){
+HTTPGetResponse ResponseBuilder::BuildErrorResponse(const string errorCode) {
     map<string, string> headers;
 
     headers["version"] = VERSION;
@@ -35,7 +35,7 @@ HTTPGetResponse ResponseBuilder::Build404ErrorResponse() {
     return BuildErrorResponse("404 Not Found");
 }
 
-HTTPGetResponse ResponseBuilder::PopulateResponse(const HTTPGetRequest &request, string doc_root){
+HTTPGetResponse ResponseBuilder::PopulateResponse(const HTTPGetRequest &request, string doc_root) {
     map<string, string> headers;
 
     headers["version"] = VERSION;
@@ -43,11 +43,11 @@ HTTPGetResponse ResponseBuilder::PopulateResponse(const HTTPGetRequest &request,
     headers["code"] = "200 OK";
 
     string filePath = request.getDirectory();
-    if(filePath == "/"){
+    if (filePath == "/") {
         filePath = "/index.html";
     }
 
-    if(filePath.substr(0,1) != "/"){
+    if (filePath.substr(0, 1) != "/") {
         return Build400ErrorResponse();
     }
 
@@ -64,34 +64,34 @@ HTTPGetResponse ResponseBuilder::PopulateResponse(const HTTPGetRequest &request,
     size_t idx = absolutePath.find_last_of('.');
 
     string extension = "";
-    if(idx != string::npos){
+    if (idx != string::npos) {
         extension = absolutePath.substr(idx);
     }
 
     struct stat stat_buf;
     int rc = stat(absolutePath.c_str(), &stat_buf);
 
-    if(request.getHeader("Host") == ""){
+    if (request.getHeader("Host") == "") {
         return Build400ErrorResponse();
-    }else if(rc == -1){
+    } else if (rc == -1) {
         return Build404ErrorResponse();
-    }else if(!(stat_buf.st_mode & S_IROTH)){
+    } else if (!(stat_buf.st_mode & S_IROTH)) {
         return Build403ErrorResponse();
-    }else if(absolutePath.find(absoluteDocRoot) != 0){
+    } else if (absolutePath.find(absoluteDocRoot) != 0) {
         return Build404ErrorResponse();
     }
 
-    if(extension == html_type){
+    if (extension == html_type) {
         headers["content_type"] = "text/html";
-    }else if(extension == jpg_type){
+    } else if (extension == jpg_type) {
         headers["content_type"] = "image/jpeg";
-    }else if(extension == png_type){
+    } else if (extension == png_type) {
         headers["content_type"] = "image/png";
-    }else{
+    } else {
         return Build400ErrorResponse();
     }
 
-    if(headers["code"] == "200 OK"){
+    if (headers["code"] == "200 OK") {
         auto mod_time = stat_buf.st_mtime;
         char formatted_time[100];
         tm *utc_time = gmtime(&mod_time);

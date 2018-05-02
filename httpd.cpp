@@ -69,8 +69,7 @@ void start_httpd(unsigned short port, string doc_root) {
         timeout.tv_sec = 5;
         timeout.tv_usec = 0;
 
-        if (setsockopt(clntSock, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(timeout)) < 0)
-        {
+        if (setsockopt(clntSock, SOL_SOCKET, SO_RCVTIMEO, (char *) &timeout, sizeof(timeout)) < 0) {
             DieWithError("setsockopt failed");
         }
 
@@ -82,7 +81,7 @@ void start_httpd(unsigned short port, string doc_root) {
 
         pthread_t threadID;
         int returnValue = pthread_create(&threadID, nullptr, ThreadMain, threadArgs);
-        if(returnValue != 0){
+        if (returnValue != 0) {
             DieWithError("pthread_create() failed");
             printf("with thread %lu\n", (unsigned long int) threadID);
         }
@@ -93,6 +92,6 @@ void start_httpd(unsigned short port, string doc_root) {
 
 }
 
-void DieWithError(const char *errorMessage){
+void DieWithError(const char *errorMessage) {
     printf("[ERROR] %s\n", errorMessage);
 }

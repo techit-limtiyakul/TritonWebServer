@@ -17,7 +17,7 @@ public:
     void popMessage();
 
     // prints the string to an ostream (useful for debugging)
-    void printToStream(std::ostream& stream) const;
+    void printToStream(std::ostream &stream) const;
 
 protected:
     // PUT ANY FIELDS YOU NEED HERE

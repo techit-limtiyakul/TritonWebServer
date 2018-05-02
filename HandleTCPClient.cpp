@@ -7,7 +7,7 @@
 #include "RequestFramer.hpp"
 #include "RequestParser.hpp"
 #include "ResponseBuilder.hpp"
-//#include <sys/sendfile.h>
+#include <sys/sendfile.h>
 
 using namespace std;
 
@@ -55,10 +55,10 @@ void HandleTCPClient(int clntSocket, const string doc_root)
                 off_t fileOffset = 0;
                 int fd = open(path.c_str(), O_RDONLY);
                 //for linux
-//                int filesize = stoi(response.getHeader("content_length"));
-//                sendfile(clntSocket, fd, &fileOffset, filesize);
-                struct sf_hdtr* s;
-                sendfile(fd, clntSocket, fileOffset, &fileOffset, s, 0);
+                int filesize = stoi(response.getHeader("content_length"));
+                sendfile(clntSocket, fd, &fileOffset, filesize);
+//                struct sf_hdtr* s;
+//                sendfile(fd, clntSocket, fileOffset, &fileOffset, s, 0);
             }
 
             if(request.getHeader("Connection") == "close")
