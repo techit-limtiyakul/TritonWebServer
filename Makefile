@@ -1,6 +1,6 @@
 
 CC=g++
-CFLAGS=-ggdb -Wall -Wextra -pedantic -Werror
+CFLAGS=-ggdb -std=c++11 -Wall -Wextra
 DEPS = httpd.hpp RequestFramer.hpp RequestParser.hpp HTTPGetRequest.hpp HTTPGetResponse.hpp
 SRCS = httpd.cpp RequestFramer.cpp RequestParser.cpp HTTPGetRequest.cpp HTTPGetResponse.cpp HandleTCPClient.cpp PopulateResponse.cpp
 MAIN_SRCS = main.cpp $(SRCS)
