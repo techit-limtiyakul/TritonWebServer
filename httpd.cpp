@@ -75,10 +75,8 @@ void start_httpd(unsigned short port, string doc_root) {
         }
 
 
-        auto *threadArgs = (struct ThreadArgs *) malloc(sizeof(struct ThreadArgs));
-        if (threadArgs == nullptr){
-            DieWithError("malloc() failed");
-        }
+        auto *threadArgs = new threadArgs();
+
         threadArgs->clntSock = clntSock;
         threadArgs->doc_root = doc_root;
 
