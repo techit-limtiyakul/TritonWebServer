@@ -1,6 +1,7 @@
 #include <iostream>
 #include "ResponseBuilder.hpp"
 #include <sys/stat.h>
+#include <time.h>
 
 using namespace std;
 
@@ -77,7 +78,6 @@ HTTPGetResponse ResponseBuilder::PopulateResponse(const HTTPGetRequest &request,
     }else if(!(stat_buf.st_mode & S_IROTH)){
         return Build403ErrorResponse();
     }else if(absolutePath.find(absoluteDocRoot) != 0){
-        cout << absolutePath << "::" << absoluteDocRoot << endl;
         return Build404ErrorResponse();
     }
 
@@ -92,11 +92,12 @@ HTTPGetResponse ResponseBuilder::PopulateResponse(const HTTPGetRequest &request,
     }
 
     if(headers["code"] == "200 OK"){
-//        for linux
-//        auto mod_time = stat_buf.st_mtime;
-//        headers["last_modified"] = ctime(&mod_time);
-        auto mod_time = stat_buf.st_mtimespec;
-        headers["last_modified"] = ctime(&mod_time.tv_sec);
+        auto mod_time = stat_buf.st_mtime;
+        char formatted_time[100];
+        tm *utc_time = gmtime(&mod_time);
+        utc_time->tm_zone = "GMT";
+        strftime(formatted_time, 100, "%a, %d %b %Y %H:%M:%S %Z", utc_time);
+        headers["last_modified"] = formatted_time;
     }
 
     headers["content_length"] = to_string(stat_buf.st_size);
