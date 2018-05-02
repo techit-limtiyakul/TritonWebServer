@@ -12,7 +12,7 @@ public:
 
     string getDirectory()const;
 
-    string getHeader(string key);
+    string getHeader(string key) const;
 
     map<string, string> getHeaders()const;
 
