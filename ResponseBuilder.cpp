@@ -1,8 +1,6 @@
 #include <iostream>
 #include "ResponseBuilder.hpp"
 #include <sys/stat.h>
-#include <ctime>
-#include <chrono>
 
 using namespace std;
 
@@ -61,8 +59,6 @@ HTTPGetResponse ResponseBuilder::PopulateResponse(const HTTPGetRequest &request,
 
     string absolutePath = string(resolved_path);
     string absoluteDocRoot = string(resolved_doc_root);
-
-    cout << absolutePath << endl;
 
     size_t idx = absolutePath.find_last_of('.');
 

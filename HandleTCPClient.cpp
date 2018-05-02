@@ -2,7 +2,6 @@
 #include <sys/socket.h> /* for recv() and send() */
 #include <unistd.h>     /* for close() */
 #include <iostream>
-#include <assert.h>
 #include <fcntl.h>
 #include "httpd.hpp"
 #include "RequestFramer.hpp"
@@ -46,12 +45,12 @@ void HandleTCPClient(int clntSocket, const string doc_root)
                 response = builder.Build400ErrorResponse();
             }
 
-
             string responseString = response.toString();
             send(clntSocket, responseString.c_str(), responseString.size() , 0);
 
             string path = response.getAbsolutePath();
-            cout << "Path to file" << path << endl;
+            printf("Requesting file from: %s\n", path.c_str());
+
             if (path != "") {
                 off_t fileOffset = 0;
                 int fd = open(path.c_str(), O_RDONLY);
@@ -67,9 +66,8 @@ void HandleTCPClient(int clntSocket, const string doc_root)
 
         }
 
-        if(isDone){
+        if(isDone)
             break;
-        }
 
         numBytesRcvd = recv(clntSocket, readBuffer, BUFSIZE, 0);
         if (numBytesRcvd < 0)
