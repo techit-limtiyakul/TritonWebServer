@@ -5,7 +5,7 @@
 #include "httpd.hpp"
 #include <string.h>
 
-#define MAXPENDING 5
+#define MAXPENDING 15
 
 
 struct ThreadArgs {

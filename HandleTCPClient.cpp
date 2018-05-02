@@ -28,7 +28,7 @@ void HandleTCPClient(int clntSocket, const string doc_root)
     while (numBytesRcvd > 0) { // 0 indicates end of stream
 
         framer.append(string(readBuffer, readBuffer+numBytesRcvd));
-        if(framer.hasMessage()){
+        while(framer.hasMessage()){
             string message = framer.topMessage();
             framer.popMessage();
 
@@ -42,7 +42,7 @@ void HandleTCPClient(int clntSocket, const string doc_root)
             }
             catch(exception &e)
             {
-                response = builder.BuildErrorResponse("400 User Error");
+                response = builder.Build400ErrorResponse();
             }
 
 //            auto myMap = request.getHeaders();

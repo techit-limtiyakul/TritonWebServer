@@ -16,4 +16,4 @@ add_executable(p1_m
         HTTPGetResponse.hpp
         HTTPGetResponse.cpp
         HandleTCPClient.cpp
-        PopulateResponse.cpp)
+        ResponseBuilder.cpp ResponseBuilder.hpp)
