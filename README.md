@@ -1,8 +1,6 @@
-# cse291-project1
+# Triton HTTP Server
 
-Basic skeleton code for CSE 291's Project 1
-
-Starter code copyright (c) 2017, 2018 George Porter.  All Rights Reserved.
+Lightweight web server based on socket programming in C++. "Connection" header is supported.
 
 ## To build
 
